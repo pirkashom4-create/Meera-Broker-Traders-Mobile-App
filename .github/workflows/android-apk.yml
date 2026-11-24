@@ -1,0 +1,48 @@
+
+name: Build MEERA Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Extract Android source
+        run: |
+          mkdir source
+          unzip -q *.zip -d source
+          ROOT=$(find source -name settings.gradle -printf '%h\n' | head -n 1)
+          echo "PROJECT_ROOT=$ROOT" >> $GITHUB_ENV
+          test -n "$ROOT"
+
+      - name: Build APK
+        run: |
+          cd "$PROJECT_ROOT"
+          gradle assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: MEERA-BROKER-TRADERS-APK
+          path: source/**/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          
