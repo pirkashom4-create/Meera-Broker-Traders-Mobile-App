@@ -29,7 +29,7 @@ jobs:
       - name: Extract Android source
         run: |
           mkdir source
-          unzip -q "Meera_Broker_Trader_Android_v2_1_MODERN_DASHBOARD_SOURCE.zip" -d source
+       Meera_Final_v2_4.zip
           ROOT=$(find source -name settings.gradle -printf '%h\n' | head -n 1)
           echo "PROJECT_ROOT=$ROOT" >> $GITHUB_ENV
           test -n "$ROOT"
